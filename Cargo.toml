@@ -1,7 +1,7 @@
 [package]
 name = "project-root"
 description = "Simple utility to return the absolute path to your project root"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Neil Chambers <neil@truelayer.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
