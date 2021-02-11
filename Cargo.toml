@@ -3,6 +3,9 @@ name = "project-root"
 version = "0.1.0"
 authors = ["Neil Chambers <neil@truelayer.com>"]
 edition = "2018"
+license = "MIT OR Apache-2.0"
+keywords = ["util", "project root"]
+categories = ["test", "testing"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
