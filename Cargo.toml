@@ -5,7 +5,7 @@ version = "0.1.0"
 authors = ["Neil Chambers <neil@truelayer.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-keywords = ["util", "project root"]
+keywords = ["util", "rootdir"]
 categories = ["test", "testing"]
 repository = "https://github.com/neilwashere/rust-project-root"
 
