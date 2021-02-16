@@ -3,9 +3,10 @@
 //! Helper to find the absolute root directory path of a project as it stands relative
 //! to the location of the nearest Cargo.lock file.
 
-use std::{env, io};
+use std::ffi::OsString;
 use std::fs::read_dir;
 use std::path::PathBuf;
+use std::{env, io};
 
 /// Get the project root (relative to closest Cargo.lock file)
 /// ```rust
@@ -22,17 +23,12 @@ pub fn get_project_root() -> io::Result<PathBuf> {
     loop {
         let have_project_root = match path_component {
             None => panic!("Could not find project root ლ(ಠ益ಠლ)"),
-            Some(p) => {
-                // do any entries in this directory look like Cargo.toml?
+            Some(p) =>
+            // do any entries in this directory look like Cargo.toml?
+            {
                 read_dir(p)?
                     .into_iter()
-                    .any(|p| {
-                        p.unwrap()
-                            .file_name()
-                            .to_str()
-                            .unwrap()
-                            == "Cargo.lock"
-                    })
+                    .any(|p| p.unwrap().file_name() == OsString::from("Cargo.lock"))
             }
         };
 
