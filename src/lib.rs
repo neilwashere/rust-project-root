@@ -7,6 +7,7 @@ use std::ffi::OsString;
 use std::fs::read_dir;
 use std::path::PathBuf;
 use std::{env, io};
+use std::io::ErrorKind;
 
 /// Get the project root (relative to closest Cargo.lock file)
 /// ```rust
@@ -18,30 +19,18 @@ use std::{env, io};
 pub fn get_project_root() -> io::Result<PathBuf> {
     let path = env::current_dir()?;
     let mut path_ancestors = path.as_path().ancestors();
-    let mut path_component = path_ancestors.next();
 
-    loop {
-        let have_project_root = match path_component {
-            None => panic!("Could not find project root ლ(ಠ益ಠლ)"),
-            Some(p) =>
-            // do any entries in this directory look like Cargo.toml?
-            {
-                read_dir(p)?
-                    .into_iter()
-                    .any(|p| p.unwrap().file_name() == OsString::from("Cargo.lock"))
-            }
-        };
-
-        if have_project_root {
-            break;
+    while let Some(p) = path_ancestors.next() {
+        let has_cargo =
+            read_dir(p)?
+                .into_iter()
+                .any(|p| p.unwrap().file_name() == OsString::from("Cargo.lock"));
+        if has_cargo {
+            return Ok(PathBuf::from(p))
         }
-
-        path_component = path_ancestors.next();
     }
+    Err(io::Error::new(ErrorKind::NotFound, "Ran out of places to find Cargo.toml"))
 
-    let project_path = path_component.unwrap().to_str().unwrap();
-
-    Ok(PathBuf::from(project_path))
 }
 
 #[cfg(test)]
