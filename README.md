@@ -5,11 +5,10 @@ A simple utility to obtain the absolute path to your project root.
 ## Usage
 
 ```rust
-let project_root = match project_root::get_project_root() {
-    Ok(p) => p.to_str().expect("Could not retrieve project path").to_string(),
-    Err(e) => panic!(e),
+match project_root::get_project_root() {
+    Ok(p) => println!("Current project root is {:?}", p),
+    Err(e) => println!("Error obtaining project root {:?}", e)
 };
-println!("Current project root is {}", project_root);
 ```
 
 ## Motivation

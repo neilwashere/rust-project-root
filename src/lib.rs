@@ -9,11 +9,10 @@ use std::path::PathBuf;
 
 /// Get the project root (relative to closest Cargo.lock file)
 /// ```rust
-/// let project_root = match project_root::get_project_root() {
-///     Ok(p) => p.to_str().expect("Could not retrieve project path").to_string(),
-///     Err(e) => panic!(e),
+/// match project_root::get_project_root() {
+///     Ok(p) => println!("Current project root is {:?}", p),
+///     Err(e) => println!("Error obtaining project root {:?}", e)
 /// };
-/// println!("Current project root is {}", project_root);
 /// ```
 pub fn get_project_root() -> io::Result<PathBuf> {
     let path = env::current_dir()?;
