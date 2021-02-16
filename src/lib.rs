@@ -21,13 +21,13 @@ pub fn get_project_root() -> io::Result<PathBuf> {
 
     loop {
         let have_project_root = match path_component {
-            None => panic!("no directories left to check :/"),
+            None => panic!("Could not find project root ლ(ಠ益ಠლ)"),
             Some(p) => {
                 // do any entries in this directory look like Cargo.toml?
                 read_dir(p)?
                     .into_iter()
                     .any(|p| {
-                        p.expect("Unable to get directory entry")
+                        p.unwrap()
                             .file_name()
                             .to_str()
                             .unwrap()
@@ -43,10 +43,7 @@ pub fn get_project_root() -> io::Result<PathBuf> {
         path_component = path_ancestors.next();
     }
 
-    let project_path = path_component
-        .unwrap()
-        .to_str()
-        .expect("Could not locate project root");
+    let project_path = path_component.unwrap().to_str().unwrap();
 
     Ok(PathBuf::from(project_path))
 }
