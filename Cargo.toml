@@ -1,7 +1,7 @@
 [package]
 name = "project-root"
 description = "Simple utility to return the absolute path to your project root"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Neil Chambers <neil@truelayer.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -12,8 +12,3 @@ repository = "https://github.com/neilwashere/rust-project-root"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.38"
-
-[dev-dependencies]
-toml = "0.5"
-serde = { version = "1.0", features = ["derive"]}
