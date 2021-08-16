@@ -1,7 +1,7 @@
 //! # project root
 //!
 //! Helper to find the absolute root directory path of a project as it stands relative
-//! to the location of the nearest Cargo.lock file.
+//! to the location of the nearest Cargo.toml file.
 
 use std::ffi::OsString;
 use std::fs::read_dir;
@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use std::{env, io};
 use std::io::ErrorKind;
 
-/// Get the project root (relative to closest Cargo.lock file)
+/// Get the project root (relative to closest Cargo.toml file)
 /// ```rust
 /// match project_root::get_project_root() {
 ///     Ok(p) => println!("Current project root is {:?}", p),
@@ -24,7 +24,7 @@ pub fn get_project_root() -> io::Result<PathBuf> {
         let has_cargo =
             read_dir(p)?
                 .into_iter()
-                .any(|p| p.unwrap().file_name() == OsString::from("Cargo.lock"));
+                .any(|p| p.unwrap().file_name() == OsString::from("Cargo.toml"));
         if has_cargo {
             return Ok(PathBuf::from(p))
         }
