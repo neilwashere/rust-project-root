@@ -5,9 +5,9 @@
 
 use std::ffi::OsString;
 use std::fs::read_dir;
+use std::io::ErrorKind;
 use std::path::PathBuf;
 use std::{env, io};
-use std::io::ErrorKind;
 
 /// Get the project root (relative to closest Cargo.lock file)
 /// ```rust
@@ -17,25 +17,37 @@ use std::io::ErrorKind;
 /// };
 /// ```
 pub fn get_project_root() -> io::Result<PathBuf> {
-    let path = env::current_dir()?;
-    let mut path_ancestors = path.as_path().ancestors();
+    get_project_root_using("Cargo.lock".to_string())
+}
 
-    while let Some(p) = path_ancestors.next() {
-        let has_cargo =
-            read_dir(p)?
-                .into_iter()
-                .any(|p| p.unwrap().file_name() == OsString::from("Cargo.lock"));
+/// Get the project root relative to specified file.
+/// ```rust
+/// match project_root::get_project_root_using("Makefile.toml".to_string()) {
+///     Ok(p) => println!("Current project root is {:?}", p),
+///     Err(e) => println!("Error obtaining project root {:?}", e)
+/// };
+/// ```
+pub fn get_project_root_using(filename: String) -> io::Result<PathBuf> {
+    let path = env::current_dir()?;
+    let path_ancestors = path.as_path().ancestors();
+
+    for p in path_ancestors {
+        let has_cargo = read_dir(p)?
+            .into_iter()
+            .any(|p| p.unwrap().file_name() == OsString::from(filename.clone()));
         if has_cargo {
-            return Ok(PathBuf::from(p))
+            return Ok(PathBuf::from(p));
         }
     }
-    Err(io::Error::new(ErrorKind::NotFound, "Ran out of places to find Cargo.toml"))
-
+    Err(io::Error::new(
+        ErrorKind::NotFound,
+        format!("Ran out of places to find {}", filename),
+    ))
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::get_project_root;
+    use crate::*;
     use std::fs::read_to_string;
 
     #[test]
@@ -43,6 +55,19 @@ mod tests {
         let crate_name = "name = \"project-root\"";
 
         let project_root = get_project_root().expect("There is no project root");
+
+        let toml_path = project_root.to_str().unwrap().to_owned() + "/Cargo.toml";
+        let toml_string = read_to_string(toml_path).unwrap();
+
+        assert!(toml_string.contains(crate_name));
+    }
+
+    #[test]
+    fn it_should_find_our_project_root_using_readme() {
+        let crate_name = "name = \"project-root\"";
+
+        let project_root =
+            get_project_root_using("README.md".to_string()).expect("There is no project root");
 
         let toml_path = project_root.to_str().unwrap().to_owned() + "/Cargo.toml";
         let toml_string = read_to_string(toml_path).unwrap();
