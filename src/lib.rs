@@ -29,7 +29,7 @@ pub fn get_project_root() -> io::Result<PathBuf> {
             return Ok(PathBuf::from(p))
         }
     }
-    Err(io::Error::new(ErrorKind::NotFound, "Ran out of places to find Cargo.toml"))
+    Err(io::Error::new(ErrorKind::NotFound, "Ran out of places to find Cargo.lock"))
 
 }
 
